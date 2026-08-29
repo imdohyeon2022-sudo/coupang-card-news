@@ -1,0 +1,688 @@
+<title>국문(鞫問) 기획 브리프</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600&family=Noto+Serif+KR:wght@500;700&display=swap">
+<style>
+  :root {
+    --paper:      #F2F4F0;
+    --surface:    #FBFCFA;
+    --surface-2:  #E9EDE7;
+    --ink:        #1A211C;
+    --ink-2:      #4E5A53;
+    --ink-3:      #7C8880;
+    --line:       #D5DCD4;
+    --line-soft:  #E3E8E1;
+    --accent:     #2F6F4E;
+    --accent-ink: #235741;
+    --accent-bg:  #E1EBE3;
+    --brass:      #916D1B;
+    --brass-bg:   #F0E8D2;
+    --crit:       #A33B2A;
+    --shadow:     0 1px 2px rgba(26,33,28,.05), 0 8px 24px -16px rgba(26,33,28,.28);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #101410;
+      --surface:    #171D18;
+      --surface-2:  #1E251F;
+      --ink:        #E7EDE6;
+      --ink-2:      #A3AFA6;
+      --ink-3:      #7C8880;
+      --line:       #2B342D;
+      --line-soft:  #222A23;
+      --accent:     #77C299;
+      --accent-ink: #9AD6B4;
+      --accent-bg:  #1B2A22;
+      --brass:      #D6AC55;
+      --brass-bg:   #2A2417;
+      --crit:       #E08472;
+      --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:      #101410;
+    --surface:    #171D18;
+    --surface-2:  #1E251F;
+    --ink:        #E7EDE6;
+    --ink-2:      #A3AFA6;
+    --ink-3:      #7C8880;
+    --line:       #2B342D;
+    --line-soft:  #222A23;
+    --accent:     #77C299;
+    --accent-ink: #9AD6B4;
+    --accent-bg:  #1B2A22;
+    --brass:      #D6AC55;
+    --brass-bg:   #2A2417;
+    --crit:       #E08472;
+    --shadow:     0 1px 2px rgba(0,0,0,.4), 0 10px 28px -18px rgba(0,0,0,.9);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans KR", -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    word-break: keep-all;
+  }
+
+  .wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 24px 96px;
+  }
+
+  /* ---------- masthead ---------- */
+  .masthead {
+    border-bottom: 1px solid var(--ink);
+    padding: 56px 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .stamp {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+  }
+  .stamp b { color: var(--accent); font-weight: 600; }
+  h1 {
+    font-family: "Noto Serif KR", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(34px, 6vw, 54px);
+    line-height: 1.18;
+    letter-spacing: -.015em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-size: 17px;
+    color: var(--ink-2);
+    max-width: 62ch;
+    margin: 0;
+  }
+  .standfirst strong { color: var(--ink); font-weight: 500; }
+
+  /* ---------- kpi ---------- */
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    margin: 32px 0 0;
+  }
+  .kpi { background: var(--surface); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .kpi .n {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.1;
+    color: var(--accent);
+    letter-spacing: -.02em;
+  }
+  .kpi .l { font-size: 12.5px; color: var(--ink-2); line-height: 1.5; }
+  .kpi .src { font-family: "IBM Plex Mono", monospace; font-size: 10px; color: var(--ink-3); letter-spacing: .04em; }
+
+  /* ---------- sections ---------- */
+  section { padding-top: 60px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  .eyebrow::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  h2 {
+    font-family: "Noto Serif KR", Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(24px, 3.6vw, 32px);
+    line-height: 1.3;
+    letter-spacing: -.01em;
+    margin: 0 0 10px;
+    text-wrap: balance;
+  }
+  h3 {
+    font-family: "Noto Serif KR", Georgia, serif;
+    font-weight: 500;
+    font-size: 19px;
+    line-height: 1.45;
+    margin: 0;
+  }
+  p { max-width: 68ch; margin: 0 0 14px; }
+  .lede { color: var(--ink-2); font-size: 16.5px; }
+  a { color: var(--accent-ink); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ---------- trend list ---------- */
+  .trends { display: flex; flex-direction: column; gap: 1px; background: var(--line-soft); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin-top: 22px; }
+  .trend { background: var(--paper); display: grid; grid-template-columns: 170px 1fr; gap: 24px; padding: 20px 0; }
+  .trend .tag {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 12px;
+    letter-spacing: .04em;
+    color: var(--ink-3);
+    padding-top: 4px;
+  }
+  .trend h3 { margin-bottom: 6px; }
+  .trend p { margin: 0; font-size: 15px; color: var(--ink-2); }
+  .trend p + p { margin-top: 8px; }
+  .num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; color: var(--ink); font-weight: 500; }
+
+  /* ---------- principles ---------- */
+  .rules { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 22px; }
+  .rule { background: var(--surface); border: 1px solid var(--line); padding: 18px 20px; display: flex; flex-direction: column; gap: 6px; }
+  .rule .k { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--brass); }
+  .rule .t { font-weight: 500; font-size: 16px; line-height: 1.5; }
+  .rule .d { font-size: 14.5px; color: var(--ink-2); line-height: 1.65; }
+
+  /* ---------- concept ---------- */
+  .concept { border: 1px solid var(--line); background: var(--surface); padding: 26px 28px; margin-top: 22px; }
+  .concept.pick { border-color: var(--accent); background: var(--accent-bg); box-shadow: var(--shadow); }
+  .chead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; margin-bottom: 6px; }
+  .chip {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+    padding: 3px 8px; border: 1px solid currentColor; color: var(--accent); line-height: 1.4;
+  }
+  .chip.b { color: var(--brass); }
+  .concept h3 { font-size: 24px; font-weight: 700; }
+  .oneline { font-size: 16.5px; color: var(--ink); margin: 8px 0 18px; max-width: 60ch; }
+  .spec { display: grid; grid-template-columns: 108px 1fr; gap: 10px 20px; font-size: 14.5px; border-top: 1px solid var(--line); padding-top: 16px; }
+  .spec dt { font-family: "IBM Plex Mono", monospace; font-size: 11.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); padding-top: 4px; }
+  .spec dd { margin: 0; color: var(--ink-2); }
+  .spec dd strong { color: var(--ink); font-weight: 500; }
+  .loop { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--ink-2); line-height: 1.9; }
+  .loop b { color: var(--accent-ink); font-weight: 500; }
+
+  .risks { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .risk { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14.5px; }
+  .risk .r { color: var(--crit); }
+  .risk .r::before { content: "위험 "; font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; opacity: .8; }
+  .risk .f { color: var(--ink-2); }
+  .risk .f::before { content: "설계 "; font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .1em; color: var(--ink-3); }
+
+  /* ---------- tables ---------- */
+  .scroll { overflow-x: auto; margin-top: 22px; border: 1px solid var(--line); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; min-width: 660px; font-size: 14.5px; }
+  caption { caption-side: top; text-align: left; padding: 14px 18px 0; font-size: 13px; color: var(--ink-3); }
+  th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.6; }
+  thead th {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--ink-3); font-weight: 500;
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.money { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
+  td.org { font-weight: 500; white-space: nowrap; }
+  .state { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .06em; padding: 2px 7px; border-radius: 2px; white-space: nowrap; }
+  .state.closed { background: var(--surface-2); color: var(--ink-3); }
+  .state.open { background: var(--accent-bg); color: var(--accent-ink); }
+  .state.next { background: var(--brass-bg); color: var(--brass); }
+
+  /* ---------- timeline ---------- */
+  .tl { margin-top: 22px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 22px; padding-left: 0; }
+  .tl > li { list-style: none; padding-left: 22px; position: relative; }
+  .tl > li::before { content: ""; position: absolute; left: -5px; top: 9px; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; }
+  .tl .when { font-family: "IBM Plex Mono", monospace; font-size: 12px; letter-spacing: .08em; color: var(--brass); display: block; }
+  .tl .what { font-weight: 500; }
+  .tl .why { font-size: 14.5px; color: var(--ink-2); }
+  ul.plain { padding-left: 18px; margin: 8px 0 0; }
+  ul.plain li { margin-bottom: 6px; color: var(--ink-2); font-size: 15px; }
+
+  /* ---------- note ---------- */
+  .note {
+    margin-top: 40px; border: 1px dashed var(--line); background: var(--surface);
+    padding: 18px 20px; font-size: 14px; color: var(--ink-2);
+  }
+  .note b { color: var(--ink); font-weight: 500; }
+
+  footer { margin-top: 56px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 13.5px; color: var(--ink-2); }
+  footer h2 { font-size: 15px; font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 12px; }
+  footer ul { padding-left: 18px; margin: 0; display: grid; gap: 5px; }
+
+  @media (max-width: 760px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .trend { grid-template-columns: 1fr; gap: 6px; }
+    .rules { grid-template-columns: 1fr; }
+    .spec { grid-template-columns: 1fr; gap: 2px 0; }
+    .spec dt { padding-top: 12px; }
+    .risk { grid-template-columns: 1fr; gap: 4px; }
+    .concept { padding: 22px 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="stamp">
+      <span>기획 브리프</span>
+      <span>2026.08.29</span>
+      <span><b>트렌드 → 컨셉 → 자금</b></span>
+    </div>
+    <h1>소규모 팀이 2026년에<br>만들어야 할 게임</h1>
+    <p class="standfirst">
+      시장은 커지는데 개발 규모는 작아지고 있습니다. 2026년의 기회는 <strong>AI를 도구가 아니라 플레이 메커닉으로 쓰는
+      소형 PC 게임</strong>에 있고, 마침 국내 지원사업의 예산도 그쪽으로 옮겨갔습니다. 트렌드 근거, 컨셉 3안,
+      그리고 돈이 나오는 창구를 한 장에 정리했습니다.
+    </p>
+
+    <div class="kpis">
+      <div class="kpi">
+        <span class="n">$250.9B</span>
+        <span class="l">2026년 글로벌 게임 시장, 2034년까지 연 6.5% 성장 전망</span>
+        <span class="src">Straits Research</span>
+      </div>
+      <div class="kpi">
+        <span class="n">14.3%</span>
+        <span class="l">인디 게임 시장 연평균 성장률 — 전체 시장의 두 배 이상</span>
+        <span class="src">Mordor Intelligence</span>
+      </div>
+      <div class="kpi">
+        <span class="n">95%</span>
+        <span class="l">이미 개발에 AI를 쓰고 있는 개발자 비율</span>
+        <span class="src">Unity 2026 리포트</span>
+      </div>
+      <div class="kpi">
+        <span class="n">−77%</span>
+        <span class="l">유니티 프로젝트 개발 시간 중앙값 감소 (91h → 21h)</span>
+        <span class="src">Unity 2026 리포트</span>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="eyebrow">트렌드</div>
+    <h2>지금 시장을 움직이는 다섯 가지</h2>
+    <p class="lede">숫자가 말하는 건 하나입니다. 큰 게임의 경쟁은 더 세졌고, 작은 게임의 손익분기점은 내려갔습니다.</p>
+
+    <div class="trends">
+
+      <article class="trend">
+        <div class="tag">플랫폼 무게중심</div>
+        <div>
+          <h3>모바일에서 PC·콘솔로 다시 기웁니다</h3>
+          <p>PC 게임 시장은 2025년 <span class="num">334.7억 달러</span>에서 2026년 <span class="num">355.1억 달러</span>로,
+          콘솔은 <span class="num">248.1억</span>에서 <span class="num">255.6억 달러</span>로 올라갑니다. Newzoo는 2025~2028년
+          콘솔 <span class="num">4.7%</span>, PC <span class="num">3.3%</span> 성장률을 모바일보다 높게 잡았습니다.</p>
+          <p>모바일은 다운로드 규모 경쟁에서 수익화 구조 경쟁으로 넘어갔습니다. 신규 팀이 들어가기에 진입장벽이 가장 높은 쪽입니다.</p>
+        </div>
+      </article>
+
+      <article class="trend">
+        <div class="tag">스팀</div>
+        <div>
+          <h3>역대 최고 매출, 그러나 역대 최다 출시</h3>
+          <p>스팀은 프리미엄 매출·다운로드·출시작 수 모두 신기록을 세웠습니다. 매출 성장은 AA·AAA 액션/슈팅이 끌었지만,
+          인디 퍼블리셔 매출도 전년 대비 늘었습니다.</p>
+          <p>바꿔 말하면 <strong>돈은 늘었는데 경쟁작은 더 늘었다</strong>는 뜻입니다. 만들기가 아니라 발견되기가 병목입니다.</p>
+        </div>
+      </article>
+
+      <article class="trend">
+        <div class="tag">인디 시장</div>
+        <div>
+          <h3>인디는 2031년까지 두 배</h3>
+          <p>인디 게임 시장은 2026년 <span class="num">55.4억 달러</span> → 2031년 <span class="num">108.3억 달러</span>,
+          연평균 <span class="num">14.32%</span> 성장이 전망됩니다. 아시아·태평양이 2025년 매출의
+          <span class="num">44.35%</span>를 차지하고 성장률도 <span class="num">16.08%</span>로 가장 높습니다.</p>
+        </div>
+      </article>
+
+      <article class="trend">
+        <div class="tag">개발 방식</div>
+        <div>
+          <h3>팀은 작아지고 사이클은 짧아집니다</h3>
+          <p>개발자의 <span class="num">95%</span>가 이미 AI를 쓰고, 용도는 코딩 보조 <span class="num">62%</span>,
+          내러티브·작문 <span class="num">44%</span>, NPC 행동 <span class="num">40%</span>, 시장조사 <span class="num">37%</span>,
+          자동 플레이테스트 <span class="num">35%</span> 순입니다. 개발자의 <span class="num">52%</span>는 리스크를 줄이려고
+          소규모 프로젝트를 우선한다고 답했습니다.</p>
+          <p>국내 사례가 이미 나왔습니다. 크래프톤 자회사 렐루게임즈는 개발자 <span class="num">3명</span>이
+          <span class="num">1개월</span> 만에 생성형 AI로 만든 <em>마법소녀 루루핑</em>을 스팀에 올렸습니다.</p>
+        </div>
+      </article>
+
+      <article class="trend">
+        <div class="tag">수익 구조</div>
+        <div>
+          <h3>모바일은 라이브옵스 싸움이 됐습니다</h3>
+          <p>하이브리드 캐주얼이 성장을 주도했고(<em>Archero 2</em>가 2025년 액션 모바일 매출 성장률 1위),
+          광고와 인앱결제를 섞는 구조가 표준이 됐습니다. 동시에 UA 비용이 올라 승부는 유닛 이코노믹스와
+          라이브옵스 운영력에서 갈립니다 — 소규모 팀이 가장 불리한 지형입니다.</p>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">기획 원칙</div>
+    <h2>그래서 무엇을 만들 것인가</h2>
+    <p class="lede">위 다섯 개를 기획 제약 조건으로 번역하면 다음 다섯 가지가 됩니다. 컨셉은 이 제약을 통과해야 합니다.</p>
+
+    <div class="rules">
+      <div class="rule">
+        <span class="k">규모</span>
+        <span class="t">3~5인 · 8~10개월 · 4~6시간 분량</span>
+        <span class="d">개발 시간이 줄어든 만큼 손익분기점도 내려갔습니다. 2년짜리 대작은 소규모 팀의 유일한 자산인 시행 횟수를 다 써버립니다.</span>
+      </div>
+      <div class="rule">
+        <span class="k">차별화</span>
+        <span class="t">AI는 개발 도구가 아니라 플레이 그 자체로</span>
+        <span class="d">AI로 빨리 만드는 건 이제 모두가 합니다. 경쟁 우위는 AI가 있어야만 성립하는 플레이에서 나옵니다. 콘진원 AI 과제도 정확히 이 조건을 요구합니다.</span>
+      </div>
+      <div class="rule">
+        <span class="k">플랫폼</span>
+        <span class="t">스팀 선출시, 콘솔은 2년차 로드맵</span>
+        <span class="d">모바일 라이브옵스 경쟁은 피하고, 콘솔 이식은 지원사업 2년차(최대 5억)와 플랫폼전환형(최대 4억)에 얹어 자금을 붙입니다.</span>
+      </div>
+      <div class="rule">
+        <span class="k">소재</span>
+        <span class="t">한국적 소재를 글로벌 차별점으로</span>
+        <span class="d">한국의 장소·문학·역사를 모티브로 한 게임이 글로벌에서 오히려 변별력을 갖는다는 진단이 반복됩니다. 국내 심사에서도 강점으로 읽힙니다.</span>
+      </div>
+      <div class="rule">
+        <span class="k">발견성</span>
+        <span class="t">위시리스트를 개발 마일스톤에 포함</span>
+        <span class="d">출시작이 사상 최다인 시장에서 마케팅은 후반 작업이 아닙니다. 플레이 영상이 스스로 클립이 되는 구조인지를 기획 단계에서 판정하세요.</span>
+      </div>
+      <div class="rule">
+        <span class="k">검증</span>
+        <span class="t">수직 슬라이스 하나로 전부 증명</span>
+        <span class="d">지원사업 발표평가, 퍼블리셔 미팅, 스팀 페이지가 모두 같은 데모 하나를 씁니다. 사건 1건 · 5분 분량이면 충분합니다.</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="eyebrow">컨셉</div>
+    <h2>기획안 3종</h2>
+    <p class="lede">A안을 권합니다. 원칙 여섯 개를 모두 통과하고, 신설된 AI 지원사업의 요건과 정면으로 맞물립니다.</p>
+
+    <article class="concept pick">
+      <div class="chead">
+        <span class="chip">A안 · 권장</span>
+        <h3>국문 鞫問</h3>
+      </div>
+      <p class="oneline">조선 포도청 종사관이 되어, <strong>정말로 말이 통하는 용의자</strong>를 심문해 자백을 받아냅니다.</p>
+
+      <dl class="spec">
+        <dt>장르</dt>
+        <dd>LLM 기반 대화형 추리 어드벤처 · PC(Steam) 선출시 → 콘솔 이식</dd>
+
+        <dt>코어 루프</dt>
+        <dd class="loop"><b>사건 브리핑</b> → <b>현장 증거 수집</b>(결정론적) → <b>자유 대화 심문</b>(AI NPC) → <b>모순 제시</b> → <b>조서 작성</b> → <b>판결 판정</b></dd>
+
+        <dt>차별점</dt>
+        <dd>정해진 선택지를 고르는 게임이 아니라, <strong>증거로 모순을 만들어내는</strong> 게임입니다. 플레이어마다 심문 기록이 전부 달라지므로
+        방송·숏폼에서 스스로 클립이 됩니다. 발견성 문제를 콘텐츠 구조로 푸는 셈입니다.</dd>
+
+        <dt>규모</dt>
+        <dd><strong>3~4인 · 8~10개월</strong> · 사건 6~8건 · 플레이 4~6시간 · 프리미엄 단품 판매</dd>
+
+        <dt>지원 적합</dt>
+        <dd>AI가 플레이에 직접 쓰이므로 <strong>인공지능 게임콘텐츠 제작지원(과제당 최대 3억)</strong> 요건에 그대로 부합하고,
+        한국 소재라 일반형 PC 분야(1년차 최대 4억)로도 지원 가능합니다.</dd>
+      </dl>
+
+      <div class="risks">
+        <div class="risk">
+          <span class="r">LLM 호출 비용과 응답 지연이 원가를 갉아먹습니다.</span>
+          <span class="f">용의자별 사실 DB + 소형 모델 + 응답 캐시로 처리하고, 심문 턴 수 자체를 소모 자원으로 게임화합니다.</span>
+        </div>
+        <div class="risk">
+          <span class="r">플레이어가 프롬프트로 NPC 설정을 무너뜨립니다.</span>
+          <span class="f">NPC는 자신이 '아는 사실'만 참조하도록 제한하고, 모르는 영역은 침묵·회피 대사로 고정합니다.</span>
+        </div>
+        <div class="risk">
+          <span class="r">AI가 판정까지 하면 공정성이 무너집니다.</span>
+          <span class="f">승패 판정은 LLM이 아니라 규칙 엔진이 합니다. AI는 대사만, 정답 판정은 결정론적으로.</span>
+        </div>
+        <div class="risk">
+          <span class="r">지원사업은 계약 종료까지 상용화 버전을 요구합니다.</span>
+          <span class="f">사건 1건짜리 수직 슬라이스를 먼저 완성해 확장 가능한 형태로 설계합니다.</span>
+        </div>
+      </div>
+    </article>
+
+    <article class="concept">
+      <div class="chead">
+        <span class="chip b">B안 · 조건부</span>
+        <h3>하이브리드 캐주얼 로그라이트</h3>
+      </div>
+      <p class="oneline">한 손 조작 자동 사격 + 빌드 조합, 3분 런의 모바일 게임. 광고와 인앱결제를 결합합니다.</p>
+      <dl class="spec">
+        <dt>근거</dt>
+        <dd>2025년 매출 성장률이 가장 높았던 구간이고, 경기게임제작지원에 <strong>하이브리드 캐주얼 분야가 따로 있습니다</strong>.</dd>
+        <dt>제약</dt>
+        <dd>UA 비용 상승과 상시 라이브옵스가 전제입니다. 운영 인력과 마케팅 예산이 없으면 출시 자체가 손실입니다.</dd>
+        <dt>판단</dt>
+        <dd><strong>퍼블리셔가 붙는 경우에만</strong> 추천합니다. 자체 출시 계획이라면 A·C안이 안전합니다.</dd>
+      </dl>
+    </article>
+
+    <article class="concept">
+      <div class="chead">
+        <span class="chip b">C안 · 대안</span>
+        <h3>조선 주막 경영 시뮬</h3>
+      </div>
+      <p class="oneline">주막을 꾸리며 하룻밤 묵어가는 손님들의 사연을 듣는, 느린 속도의 경영 시뮬레이션.</p>
+      <dl class="spec">
+        <dt>근거</dt>
+        <dd>경영 시뮬은 수익성이 검증된 장르이고, 콘솔 이식 친화적이라 <strong>콘솔 2년차 최대 5억·플랫폼전환형 최대 4억</strong>을 겨냥할 수 있습니다.</dd>
+        <dt>제약</dt>
+        <dd>기술 난이도는 낮지만 콘텐츠 물량 부담이 큽니다. 손님 사연을 A안의 대화 시스템으로 채우면 두 기획이 자산을 공유합니다.</dd>
+        <dt>판단</dt>
+        <dd>롱테일 매출과 낮은 개발 리스크가 필요할 때. A안의 후속작으로도 성립합니다.</dd>
+      </dl>
+    </article>
+  </section>
+
+  <section>
+    <div class="eyebrow">자금</div>
+    <h2>게임 지원사업 지도</h2>
+    <p class="lede">
+      2026년 콘진원 게임콘텐츠 제작지원은 총 <span class="num">236억 원</span> 규모로 <span class="num">82개</span> 내외 과제를 지원했고,
+      접수는 3월 3일에 마감됐습니다. 오늘(8월 말) 기준 대형 공고는 대부분 닫혀 있으므로,
+      <strong>실질적인 목표는 2027년 2~3월 사이클</strong>입니다.
+    </p>
+
+    <div class="scroll">
+      <table>
+        <caption>중앙 부처 · 콘진원 (2026년 집행 기준)</caption>
+        <thead>
+          <tr><th>사업</th><th>분야</th><th>지원 규모</th><th>대상</th><th>2026 접수</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="org">일반형 게임콘텐츠 제작지원</td>
+            <td>PC / 콘솔 / 모바일 / 아케이드 / 보드</td>
+            <td class="money">총 193억<br>PC 1년차 4억<br>콘솔 2년차 5억<br>모바일 1년차 4억<br>아케이드 2억 · 보드 0.8억</td>
+            <td>중소 게임기업</td>
+            <td><span class="state closed">3/3 마감</span></td>
+          </tr>
+          <tr>
+            <td class="org">인공지능 게임콘텐츠 제작지원 <em>(신설)</em></td>
+            <td>플랫폼 제한 없음</td>
+            <td class="money">과제당 최대 3억<br>9개 내외 선정</td>
+            <td>AI를 <strong>플레이에 직접 활용</strong>하고 계약 종료까지 상용화 버전 개발이 가능한 과제</td>
+            <td><span class="state closed">3/3 마감</span></td>
+          </tr>
+          <tr>
+            <td class="org">인디게임 제작지원 <em>(공모전 전환)</em></td>
+            <td>전 분야</td>
+            <td class="money">총 60억<br>기업 70 + 개인 60 → 최종 20과제</td>
+            <td>기업 및 <strong>개인 개발자</strong> · 4단계 심사</td>
+            <td><span class="state closed">상반기</span></td>
+          </tr>
+          <tr>
+            <td class="org">AI 솔루션 구독료 지원</td>
+            <td>AI 전환(AX)</td>
+            <td class="money">총 75억<br>500여 개사</td>
+            <td>중소 게임사 · 스타트업</td>
+            <td><span class="state next">2027 확대</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="scroll">
+      <table>
+        <caption>지자체 · 지역 게임센터 — 경쟁률이 낮고 예비창업자도 들어갑니다</caption>
+        <thead>
+          <tr><th>기관</th><th>사업</th><th>지원 규모</th><th>조건</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="org">경기콘텐츠진흥원</td>
+            <td>경기게임제작지원 — IP융합 · AI융합 · 하이브리드 캐주얼</td>
+            <td class="money">18개사</td>
+            <td>경기도 소재 법인/개인사업자 · 국내외 FGT(9~10월) 연계</td>
+          </tr>
+          <tr>
+            <td class="org">전북글로벌게임센터</td>
+            <td>AI 활용 인디게임 제작지원</td>
+            <td class="money">과제당 최대 5,000만</td>
+            <td>전북 소재 창업 3년 이내 스타트업 · <strong>예비창업자</strong></td>
+          </tr>
+          <tr>
+            <td class="org">경남글로벌게임센터</td>
+            <td>인디게임 제작지원</td>
+            <td class="money">8과제 · 2,000~4,000만</td>
+            <td>경남 소재</td>
+          </tr>
+          <tr>
+            <td class="org">전남 JNGC</td>
+            <td>인디게임 창업 제작지원</td>
+            <td class="money">2팀 · 최대 2,000만 내외</td>
+            <td><strong>예비창업자</strong> · 전남 본사 설립 조건 · 미출시작</td>
+          </tr>
+          <tr>
+            <td class="org">울산정보산업진흥원</td>
+            <td>울산 인디게임 제작지원</td>
+            <td class="money">공고별 상이</td>
+            <td>울산 소재</td>
+          </tr>
+          <tr>
+            <td class="org">서울경제진흥원</td>
+            <td>게임콘텐츠 사업화 지원(마케팅)</td>
+            <td class="money">공고별 상이</td>
+            <td>서울 소재 · 2026년 3/26 마감</td>
+          </tr>
+          <tr>
+            <td class="org">서울시</td>
+            <td>게임마켓 서울관 참가 지원</td>
+            <td class="money">부스 · 참가비 지원</td>
+            <td>차이나조이 · BIC · 지스타 참가 기업</td>
+          </tr>
+          <tr>
+            <td class="org">성남산업진흥원</td>
+            <td>인디크래프트</td>
+            <td class="money">상금 · 전시 · 바이어 매칭</td>
+            <td>출품 4/30 마감 · 전시는 <strong>GXG 2026(9/11~12, 성남)</strong> 연계</td>
+          </tr>
+          <tr>
+            <td class="org">부산정보산업진흥원</td>
+            <td>부산인디커넥트(BIC) 페스티벌</td>
+            <td class="money">전시 · 네트워킹</td>
+            <td>2026년 오프라인 8/14~16 종료</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="margin-top:34px">2027년에 돈이 어디로 가는가</h3>
+    <ul class="plain">
+      <li>문체부는 게임 분야 AI 지원을 현재 약 <span class="num">100억</span>에서 <strong>2027년 최소 1.5배</strong>로 늘리는 것을 목표로 밝혔습니다.</li>
+      <li>제작비 <span class="num">100~500억</span> 규모 게임에 프로젝트당 약 <span class="num">30억</span>을 대는 '중간 허리' 신규 사업이 추진됩니다.</li>
+      <li>인디 · 수출 · 정책금융 · AI 전환 · 청년 고용이 모두 확대 방향이며, 게임산업 진흥 종합계획(2024~2028)의 집중 대상도 <strong>콘솔과 인디</strong>입니다.</li>
+    </ul>
+    <p style="margin-top:14px">기획을 AI + 인디 + 콘솔 이식 축에 얹어두면, 향후 2년간 늘어나는 예산 줄기 세 개에 동시에 걸칩니다.</p>
+  </section>
+
+  <section>
+    <div class="eyebrow">실행</div>
+    <h2>지금부터 2027년 3월까지</h2>
+
+    <ol class="tl">
+      <li>
+        <span class="when">2026.09</span>
+        <span class="what">컨셉 확정 + 사업자 요건 정리</span>
+        <p class="why">A안으로 갈지 결정하고, 지원사업 신청 자격(법인/개인사업자, 지역 요건)을 먼저 맞춥니다. 요건 미달로 서류에서 탈락하는 경우가 가장 흔합니다. e나라도움 계정 등록도 이때.</p>
+      </li>
+      <li>
+        <span class="when">2026.09~11</span>
+        <span class="what">수직 슬라이스 — 사건 1건, 플레이 5분</span>
+        <p class="why">심문 대화, 모순 제시, 판결 판정까지 한 바퀴가 도는 데모. LLM 비용을 실측해 1인당 원가를 숫자로 확보합니다. 이 데모 하나가 발표평가·퍼블리셔·스팀 페이지에 전부 쓰입니다.</p>
+      </li>
+      <li>
+        <span class="when">2026.11</span>
+        <span class="what">지스타 · 지역 센터 입주 신청</span>
+        <p class="why">현장에서 심사위원·퍼블리셔·다른 팀의 반응을 받습니다. 지역 게임센터 입주는 경쟁률이 낮고, 이후 지역 지원사업의 자격 요건을 만들어 줍니다.</p>
+      </li>
+      <li>
+        <span class="when">2026.12~2027.01</span>
+        <span class="what">스팀 페이지 공개 · 위시리스트 수집 시작</span>
+        <p class="why">심문 장면 클립을 짧게 잘라 반복 노출합니다. 위시리스트 숫자 자체가 다음 단계 심사에서 가장 강한 근거 자료가 됩니다.</p>
+      </li>
+      <li>
+        <span class="when">2027.02~03</span>
+        <span class="what">콘진원 제작지원 공모 접수</span>
+        <p class="why">2026년 기준 2월 중순 공고 → 3월 초 마감이었습니다. AI 게임 분야와 인디 공모전에 동시 지원하고, 지역 사업은 별도로 겹쳐 넣습니다.</p>
+      </li>
+    </ol>
+
+    <div class="note">
+      <b>확인이 필요한 부분.</b> 이 문서의 금액·일정·선정 규모는 2026년 공고와 보도자료를 근거로 정리한 것으로,
+      실제 신청 전에는 콘진원 공고문과 e나라도움 원문, 각 지역 센터 공고를 직접 대조해야 합니다.
+      특히 지역 사업은 연도마다 예산과 조건이 크게 바뀌고, 2027년 사업 구조는 아직 확정 공고가 나오지 않았습니다.
+      아래 원문 링크 중 일부는 이 문서 작성 환경에서 직접 열람이 차단되어 검색 요약을 근거로 삼았습니다.
+    </div>
+  </section>
+
+  <footer>
+    <h2>출처</h2>
+    <ul>
+      <li><a href="https://sensortower.com/ko/blog/state-of-gaming-2026-KR">Sensor Tower — 2026년 게임 현황: 모바일·PC·콘솔 트렌드</a></li>
+      <li><a href="https://sensortower.com/ko/blog/mobile-games-monetisation-2026-KR">Sensor Tower — 2026년 모바일 게임 수익화 트렌드 인사이트</a></li>
+      <li><a href="https://unity.com/resources/gaming-report">Unity — 2026 Game Development Report</a></li>
+      <li><a href="https://www.mordorintelligence.kr/industry-reports/indie-game-market">Mordor Intelligence — 인디 게임 시장 규모·전망 2026~2031</a></li>
+      <li><a href="https://www.mordorintelligence.kr/industry-reports/pc-game-market">Mordor Intelligence — PC 게임 시장 보고서 2026~2031</a></li>
+      <li><a href="https://www.mordorintelligence.kr/industry-reports/gaming-console-market">Mordor Intelligence — 게임 콘솔 시장 보고서</a></li>
+      <li><a href="https://straitsresearch.com/report/gaming-market">Straits Research — Gaming Market Size &amp; Forecast</a></li>
+      <li><a href="https://blog.nasmedia.co.kr/entry/2026-gaming-trend-report-1">나스미디어 — 2026 게임 트렌드 리포트</a></li>
+      <li><a href="https://zdnet.co.kr/view/?no=20260224161740">ZDNet Korea — 콘진원, 2026년 게임 지원사업 개편</a></li>
+      <li><a href="https://www.ddaily.co.kr/m/page/view/2026021909362928202">디지털데일리 — 2026년 게임콘텐츠 제작지원 참가사 모집, AI 분야 신설</a></li>
+      <li><a href="https://www.gamemeca.com/view.php?gid=1771898">게임메카 — AI 신설과 인디 확대, 콘진원 게임 제작지원 개편</a></li>
+      <li><a href="https://www.kmib.co.kr/article/view.asp?arcid=0029419463">국민일보 — 236억 규모 2026 게임 제작지원 사업</a></li>
+      <li><a href="https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000118462">기업마당 — 2026년 일반형 게임콘텐츠 제작지원사업 공고</a></li>
+      <li><a href="https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=PBLN_000000000119297">기업마당 — 2026년 경기 게임제작지원 공고</a></li>
+      <li><a href="https://www.gcon.or.kr/gcon/business/gconNotice/list.do?menuNo=200061">경기콘텐츠진흥원 사업공고</a></li>
+      <li><a href="https://www.kocca.kr/download/cop/kocca_business_2026_v1_1.pdf">한국콘텐츠진흥원 — 2026 지원사업설명회 자료집</a></li>
+      <li><a href="https://indiegame.com/archives/24968">인디게임닷컴 — 2026 인디크래프트 참가 모집</a></li>
+      <li><a href="https://www.venturesquare.net/announcement/1082790">벤처스퀘어 — 2026년 JNGC 인디 게임 창업 제작지원 공고</a></li>
+      <li><a href="https://view.asiae.co.kr/article/2026071417244417581">아시아경제 — 정부 "게임 지원 예산 확대"</a></li>
+      <li><a href="https://www.ddaily.co.kr/page/view/2026072815140498687">디지털데일리 — 문체부, '중간 허리' 게임사 제작지원 추진</a></li>
+      <li><a href="https://gmeng.kmu.ac.kr/bbs/gmeng/764/225454/artclView.do">계명대 — 2026년 K-인디게임 산업 전망</a></li>
+    </ul>
+  </footer>
+
+</div>
