@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>전자책 홍보 영상</title>
+<style>
+  @font-face { font-family: "Pretendard"; font-weight: 500; src: url("./node_modules/pretendard/dist/web/static/woff2/Pretendard-Medium.woff2") format("woff2"); }
+  @font-face { font-family: "Pretendard"; font-weight: 700; src: url("./node_modules/pretendard/dist/web/static/woff2/Pretendard-Bold.woff2") format("woff2"); }
+  @font-face { font-family: "Pretendard"; font-weight: 900; src: url("./node_modules/pretendard/dist/web/static/woff2/Pretendard-Black.woff2") format("woff2"); }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #000; overflow: hidden; }
+  #stage { position: relative; width: 1080px; height: 1920px; overflow: hidden; font-family: "Pretendard", sans-serif; color: #f4efe4; word-break: keep-all; }
+  canvas { position: absolute; inset: 0; display: block; }
+  .t { position: absolute; left: 0; width: 100%; text-align: center; opacity: 0; will-change: transform, opacity; }
+  .gold { color: #ffc24a; }
+  #hook1 { top: 700px; font-size: 92px; font-weight: 700; letter-spacing: -2px; }
+  #hook2 { top: 840px; font-size: 112px; font-weight: 900; letter-spacing: -3px; line-height: 1.22; }
+  #tag { top: 250px; font-size: 40px; font-weight: 700; letter-spacing: 14px; color: #ffc24a; }
+  #sub { top: 1500px; font-size: 62px; font-weight: 700; letter-spacing: -1.5px; line-height: 1.4; }
+  #road { top: 190px; font-size: 84px; font-weight: 900; letter-spacing: -2.5px; line-height: 1.25; }
+  .node { position: absolute; opacity: 0; font-size: 50px; font-weight: 900; letter-spacing: -1px; white-space: nowrap;
+          padding: 14px 34px; border-radius: 999px; background: rgba(12,16,32,.78); border: 2px solid rgba(255,194,74,.75);
+          text-shadow: 0 2px 12px rgba(0,0,0,.6); }
+  .node small { font-size: 32px; font-weight: 700; color: #ffc24a; margin-right: 14px; letter-spacing: 1px; }
+  #ctaTag { top: 1290px; font-size: 38px; font-weight: 700; letter-spacing: 12px; color: #ffc24a; }
+  #ctaTitle { top: 1360px; font-size: 104px; font-weight: 900; letter-spacing: -3px; line-height: 1.2; }
+  #ctaPill { top: 1660px; }
+  #ctaPill span { display: inline-block; font-size: 50px; font-weight: 900; color: #141826; background: #ffc24a;
+                  padding: 26px 64px; border-radius: 999px; letter-spacing: -1px; box-shadow: 0 0 60px rgba(255,194,74,.45); }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./node_modules/three/build/three.module.js", "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<div id="stage">
+  <canvas id="c" width="1080" height="1920"></canvas>
+  <div class="t" id="hook1">AI는 매일 쓰는데</div>
+  <div class="t" id="hook2">수익은 왜<br><span class="gold">그대로</span>일까?</div>
+  <div class="t" id="tag">E-BOOK</div>
+  <div class="t" id="sub">「AI 기초체력 다지기」 칼럼의<br><span class="gold">4000</span>이 쓴 전자책</div>
+  <div class="t" id="road">막막한 AI 수익화,<br><span class="gold">순서대로.</span></div>
+  <div class="node" id="n0"><small>01</small>기초체력</div>
+  <div class="node" id="n1"><small>02</small>실전 적용</div>
+  <div class="node" id="n2"><small>03</small>수익화</div>
+  <div class="t" id="ctaTag">E-BOOK</div>
+  <div class="t" id="ctaTitle">4000의<br><span class="gold">AI 수익화 로드맵</span></div>
+  <div class="t" id="ctaPill"><span>출간 알림 신청하기</span></div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+// ── 책 정보 (바꾸려면 여기만 수정) ─────────────────────────────
+const BOOK = { author: '4000', line1: '4000의', line2: 'AI 수익화', line3: '로드맵', kicker: 'AI MONETIZATION ROADMAP' };
+// 실제 표지 이미지가 있으면 경로를 넣으세요 (예: './cover.jpg'). 비우면 아래 임시 표지를 그립니다.
+const COVER_IMAGE = '';
+export const DURATION = 16;
+const VW = 1080, VH = 1920;
+
+// ── 유틸 ──────────────────────────────────────────────────────
+const clamp01 = x => Math.min(1, Math.max(0, x));
+const seg = (t, a, b) => clamp01((t - a) / (b - a));
+const smooth = x => x * x * (3 - 2 * x);
+const outCubic = x => 1 - Math.pow(1 - x, 3);
+const inOut = x => x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+const outBack = x => { const c = 1.70158; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const lerp = (a, b, k) => a + (b - a) * k;
+const fade = (t, i0, i1, o0, o1) => Math.min(seg(t, i0, i1), 1 - seg(t, o0, o1));
+function rng(seed) { let s = seed; return () => (s = (s * 16807) % 2147483647) / 2147483647; }
+
+await document.fonts.load('900 60px Pretendard');
+await document.fonts.load('700 60px Pretendard');
+await document.fonts.load('500 60px Pretendard');
+
+// ── 렌더러 ────────────────────────────────────────────────────
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.setSize(VW, VH, false);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+
+const scene = new THREE.Scene();
+{ // 배경 그라디언트
+  const g = document.createElement('canvas'); g.width = 540; g.height = 960;
+  const x = g.getContext('2d');
+  const lin = x.createLinearGradient(0, 0, 0, 960);
+  lin.addColorStop(0, '#070912'); lin.addColorStop(.55, '#0d1226'); lin.addColorStop(1, '#05060c');
+  x.fillStyle = lin; x.fillRect(0, 0, 540, 960);
+  const rad = x.createRadialGradient(270, 430, 20, 270, 430, 520);
+  rad.addColorStop(0, 'rgba(60,84,170,.42)'); rad.addColorStop(1, 'rgba(0,0,0,0)');
+  x.fillStyle = rad; x.fillRect(0, 0, 540, 960);
+  const tex = new THREE.CanvasTexture(g); tex.colorSpace = THREE.SRGBColorSpace;
+  scene.background = tex;
+}
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+scene.environmentIntensity = 0.4;
+
+const camera = new THREE.PerspectiveCamera(35, VW / VH, 0.1, 100);
+camera.position.set(0, 0, 9.5);
+
+scene.add(new THREE.AmbientLight(0x8fa0ff, 0.35));
+const key = new THREE.DirectionalLight(0xfff1d6, 1.5); key.position.set(3, 4, 6); scene.add(key);
+const rim = new THREE.PointLight(0x5b7cff, 60, 30); rim.position.set(-4, 2, -2); scene.add(rim);
+const sweep = new THREE.PointLight(0xffc24a, 0, 20); scene.add(sweep);
+
+// ── 표지 텍스처 ───────────────────────────────────────────────
+function drawCover() {
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 1485;
+  const x = c.getContext('2d');
+  const bg = x.createLinearGradient(0, 0, 1024, 1485);
+  bg.addColorStop(0, '#1a2350'); bg.addColorStop(.6, '#101634'); bg.addColorStop(1, '#0a0e22');
+  x.fillStyle = bg; x.fillRect(0, 0, 1024, 1485);
+  // 오르는 길 그래픽
+  x.save(); x.globalAlpha = .9;
+  x.strokeStyle = '#ffc24a'; x.lineWidth = 10; x.lineCap = 'round'; x.lineJoin = 'round';
+  const pts = [[120, 1300], [330, 1180], [520, 1230], [700, 1060], [900, 940]];
+  x.beginPath(); x.moveTo(...pts[0]); pts.slice(1).forEach(p => x.lineTo(...p)); x.stroke();
+  pts.forEach((p, i) => { x.beginPath(); x.fillStyle = i === pts.length - 1 ? '#ffc24a' : '#101634';
+    x.arc(p[0], p[1], i === pts.length - 1 ? 26 : 17, 0, 7); x.fill(); x.stroke(); });
+  x.restore();
+  x.globalAlpha = .1; x.fillStyle = '#ffc24a';
+  x.beginPath(); x.moveTo(120, 1300); pts.slice(1).forEach(p => x.lineTo(...p)); x.lineTo(900, 1485); x.lineTo(120, 1485); x.fill();
+  x.globalAlpha = 1;
+  // 테두리
+  x.strokeStyle = 'rgba(255,194,74,.55)'; x.lineWidth = 4; x.strokeRect(46, 46, 932, 1393);
+  // 글자
+  x.textAlign = 'left'; x.textBaseline = 'alphabetic';
+  x.fillStyle = '#ffc24a'; x.font = '700 38px Pretendard';
+  x.fillText(BOOK.kicker.split('').join(' '), 104, 190);
+  x.fillStyle = '#ffc24a'; x.fillRect(104, 226, 120, 8);
+  x.fillStyle = '#f4efe4'; x.font = '700 104px Pretendard'; x.fillText(BOOK.line1, 100, 400);
+  x.font = '900 178px Pretendard'; x.fillText(BOOK.line2, 94, 600);
+  x.fillStyle = '#ffc24a'; x.fillText(BOOK.line3, 94, 800);
+  x.fillStyle = 'rgba(244,239,228,.85)'; x.font = '700 46px Pretendard'; x.textAlign = 'right';
+  x.fillText(BOOK.author + ' 지음', 920, 1385);
+  return c;
+}
+async function coverTexture() {
+  let tex;
+  if (COVER_IMAGE) tex = await new THREE.TextureLoader().loadAsync(COVER_IMAGE);
+  else tex = new THREE.CanvasTexture(drawCover());
+  tex.colorSpace = THREE.SRGBColorSpace; tex.anisotropy = 8;
+  return tex;
+}
+function pageTexture(seed) {
+  const c = document.createElement('canvas'); c.width = 512; c.height = 742;
+  const x = c.getContext('2d'); const r = rng(seed);
+  x.fillStyle = '#efe9dc'; x.fillRect(0, 0, 512, 742);
+  x.fillStyle = '#2a2f45'; x.fillRect(56, 70, 150 + r() * 120, 16);
+  x.fillStyle = '#c9a24a'; x.fillRect(56, 100, 44, 5);
+  x.fillStyle = 'rgba(40,44,66,.32)';
+  for (let y = 150; y < 670; y += 26) { if (r() < .12) { y += 14; continue; } x.fillRect(56, y, 250 + r() * 150, 7); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+// ── 책 ────────────────────────────────────────────────────────
+const W = 2, H = 2.9, T = 0.34, CT = 0.04;
+const navy = new THREE.MeshStandardMaterial({ color: 0x121a3c, roughness: .45, metalness: .15 });
+const paper = new THREE.MeshStandardMaterial({ color: 0xbdb6a6, roughness: .95 });
+const book = new THREE.Group(); scene.add(book);
+const back = new THREE.Mesh(new THREE.BoxGeometry(W, H, CT), navy); back.position.z = -T / 2 + CT / 2; book.add(back);
+const spine = new THREE.Mesh(new THREE.BoxGeometry(CT, H, T), navy); spine.position.x = -W / 2 - CT / 2; book.add(spine);
+const block = new THREE.Mesh(new THREE.BoxGeometry(W - .08, H - .1, T - 2 * CT),
+  [paper, paper, paper, paper, new THREE.MeshStandardMaterial({ map: pageTexture(7), color: 0xc9c9c9, roughness: .95 }), paper]);
+block.position.x = -.02; book.add(block);
+const coverPivot = new THREE.Group(); coverPivot.position.set(-W / 2, 0, T / 2 - CT / 2); book.add(coverPivot);
+const coverFront = new THREE.MeshStandardMaterial({ map: await coverTexture(), roughness: .38, metalness: .1 });
+const cover = new THREE.Mesh(new THREE.BoxGeometry(W, H, CT), [navy, navy, navy, navy, coverFront, paper]);
+cover.position.x = W / 2; coverPivot.add(cover);
+const pages = [];
+for (let i = 0; i < 9; i++) {
+  const p = new THREE.Group(); p.position.set(-W / 2 + .012, 0, T / 2 - CT - .003 - i * .003);
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(W - .1, H - .12),
+    new THREE.MeshStandardMaterial({ map: pageTexture(31 + i * 13), color: 0xc9c9c9, roughness: .95, side: THREE.DoubleSide }));
+  m.position.x = (W - .1) / 2; p.add(m); book.add(p); pages.push(p);
+}
+
+// ── 로드맵 경로 ───────────────────────────────────────────────
+const road = new THREE.Group(); scene.add(road);
+const curve = new THREE.CatmullRomCurve3([
+  new THREE.Vector3(.35, -1.45, .7), new THREE.Vector3(-.7, -.75, .9), new THREE.Vector3(.65, -.1, .5),
+  new THREE.Vector3(-.55, .55, .6), new THREE.Vector3(.4, 1.1, .3), new THREE.Vector3(0, 1.5, .1)]);
+const SEG = 240, RAD = 10;
+const tube = new THREE.Mesh(new THREE.TubeGeometry(curve, SEG, .032, RAD), new THREE.MeshBasicMaterial({ color: 0xffb630 }));
+road.add(tube);
+const NODE_U = [.24, .58, .97];
+const nodes = NODE_U.map(u => {
+  const m = new THREE.Mesh(new THREE.SphereGeometry(.11, 24, 16), new THREE.MeshBasicMaterial({ color: new THREE.Color(0xffd98a).multiplyScalar(2.2) }));
+  m.position.copy(curve.getPointAt(u)); road.add(m); return m;
+});
+const head = new THREE.Mesh(new THREE.SphereGeometry(.06, 16, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(3, 3, 3) })); road.add(head);
+
+// ── 파티클 ────────────────────────────────────────────────────
+const PN = 420, pr = rng(11), pBase = [];
+const pGeo = new THREE.BufferGeometry(); const pPos = new Float32Array(PN * 3);
+for (let i = 0; i < PN; i++) pBase.push([(pr() - .5) * 9, (pr() - .5) * 14, -5 + pr() * 9, .1 + pr() * .35, pr() * 6.28]);
+pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+  const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, '#fff'); g.addColorStop(.4, 'rgba(255,255,255,.5)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
+const points = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: .09, map: dot, color: 0xffcf7a, transparent: true, opacity: .75,
+  depthWrite: false, blending: THREE.AdditiveBlending }));
+scene.add(points);
+
+// ── 후처리 ────────────────────────────────────────────────────
+const composer = new EffectComposer(renderer);
+composer.setPixelRatio(1); composer.setSize(VW, VH);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(VW, VH), .55, .7, 1.0); composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+// ── DOM ───────────────────────────────────────────────────────
+const $ = id => document.getElementById(id);
+function show(id, o, dy = 0, sc = 1) { const e = $(id); e.style.opacity = o.toFixed(3); e.style.transform = `translateY(${dy.toFixed(1)}px) scale(${sc.toFixed(4)})`; }
+const v3 = new THREE.Vector3();
+
+// ── 타임라인 ──────────────────────────────────────────────────
+// A 0–3.2 훅 / B 3–7.6 책 등장 / C 7.6–12.2 펼침+로드맵 / D 12.2–16 마무리
+window.renderAt = function (t) {
+  // 파티클
+  for (let i = 0; i < PN; i++) { const b = pBase[i];
+    pPos[i * 3] = b[0] + Math.sin(t * .4 + b[4]) * .25;
+    pPos[i * 3 + 1] = ((b[1] + t * b[3] + 7) % 14) - 7;
+    pPos[i * 3 + 2] = b[2]; }
+  pGeo.attributes.position.needsUpdate = true;
+
+  // 책 포즈 키프레임
+  const enter = outCubic(seg(t, 3.0, 5.4));
+  const toOpen = inOut(seg(t, 7.4, 8.6));
+  const toEnd = inOut(seg(t, 11.9, 13.3));
+  const openK = toOpen * (1 - toEnd);
+  const float = Math.sin(t * 1.3) * .05;
+  const heroY = lerp(-7.5, .25, enter);
+  const endY = .95;
+  book.position.set(lerp(0, .72, openK), lerp(lerp(heroY, endY, toEnd), -1.5, openK) + float * (1 - openK), 0);
+  const spin = (1 - enter) * -Math.PI * 2.5;
+  const sway = Math.sin(t * .7) * .12;
+  book.rotation.set(lerp(-.08, -1.02, openK), lerp(-.42 + sway + spin, 0, openK) + toEnd * (1 - openK) * .12, lerp(.05, 0, openK));
+  book.scale.setScalar(lerp(lerp(1.12, .98, toEnd), .72, openK));
+  book.visible = t > 2.9;
+
+  // 표지·페이지 넘김
+  const coverOpen = inOut(seg(t, 8.0, 9.3)) * (1 - inOut(seg(t, 11.9, 12.9)));
+  coverPivot.rotation.y = -coverOpen * 3.0;
+  pages.forEach((p, i) => {
+    const o = inOut(seg(t, 8.5 + i * .13, 9.5 + i * .13)) * (1 - inOut(seg(t, 11.75 - i * .02, 12.75 - i * .02)));
+    p.rotation.y = -o * (2.93 - i * .03);
+    p.visible = i < 6 || o > .001; });
+
+  // 로드맵
+  const grow = smooth(seg(t, 9.4, 11.3));
+  const roadOut = 1 - seg(t, 11.7, 12.2);
+  road.visible = grow > 0 && roadOut > 0;
+  road.scale.setScalar(lerp(.9, 1, roadOut));
+  tube.geometry.setDrawRange(0, Math.floor(grow * SEG) * RAD * 6);
+  tube.material.color.set(0xffb630).multiplyScalar(2.4 * roadOut);
+  head.position.copy(curve.getPointAt(Math.min(.999, grow))); head.visible = grow < .995;
+  nodes.forEach((n, i) => {
+    const k = seg(grow, NODE_U[i] - .02, NODE_U[i] + .06);
+    n.scale.setScalar(Math.max(.0001, outBack(k)) * (1 + Math.sin(t * 5 + i) * .06) * roadOut);
+    n.getWorldPosition(v3).project(camera);
+    const e = $('n' + i), left = i % 2 === 0;
+    const sx = (v3.x * .5 + .5) * VW, sy = (-v3.y * .5 + .5) * VH;
+    e.style.opacity = (smooth(k) * roadOut).toFixed(3);
+    e.style.left = '0px'; e.style.top = '0px';
+    const w = e.offsetWidth, h = e.offsetHeight;
+    const px = left ? sx + 50 : sx - 50 - w;
+    e.style.transform = `translate(${px.toFixed(1)}px, ${(sy - h / 2).toFixed(1)}px) scale(${lerp(.8, 1, outCubic(k)).toFixed(3)})`;
+  });
+
+  // 조명 스윕
+  const sw = seg(t, 4.6, 7.2);
+  sweep.intensity = Math.sin(sw * Math.PI) * 30 + toEnd * 10;
+  sweep.position.set(lerp(-3.5, 3.5, sw), lerp(2, -1, sw), 3.2);
+  bloom.strength = .5 + openK * .25;
+
+  // 카메라
+  camera.position.set(Math.sin(t * .35) * .18, .1 + Math.cos(t * .3) * .08, lerp(10.4, 9.5, outCubic(seg(t, 3, 7))));
+  camera.lookAt(0, lerp(.15, .25, openK), 0);
+
+  // 텍스트
+  const h1 = fade(t, .25, .8, 2.6, 3.0), h2 = fade(t, .95, 1.5, 2.65, 3.05);
+  show('hook1', h1, lerp(40, 0, outCubic(seg(t, .25, .9))) - seg(t, 2.6, 3.05) * 60);
+  show('hook2', h2, lerp(50, 0, outCubic(seg(t, .95, 1.6))) - seg(t, 2.65, 3.05) * 60, lerp(.94, 1, outCubic(seg(t, .95, 1.6))));
+  show('tag', fade(t, 4.4, 5.0, 7.0, 7.4), lerp(-20, 0, outCubic(seg(t, 4.4, 5.1))));
+  show('sub', fade(t, 5.0, 5.6, 7.0, 7.4), lerp(40, 0, outCubic(seg(t, 5.0, 5.7))));
+  show('road', fade(t, 8.3, 8.9, 11.6, 12.0), lerp(-30, 0, outCubic(seg(t, 8.3, 9.0))));
+  show('ctaTag', fade(t, 13.0, 13.5, 99, 100), lerp(30, 0, outCubic(seg(t, 13.0, 13.6))));
+  show('ctaTitle', fade(t, 13.15, 13.7, 99, 100), lerp(40, 0, outCubic(seg(t, 13.15, 13.8))));
+  const pill = seg(t, 13.9, 14.4);
+  show('ctaPill', smooth(pill), 0, lerp(.7, 1, outBack(pill)) * (1 + Math.sin(Math.max(0, t - 14.4) * 4.2) * .018));
+
+  composer.render();
+};
+window.DURATION = DURATION;
+window.renderAt(0);
+window.READY = true;
+
+// 브라우저에서 직접 열면 실시간 재생
+if (!navigator.webdriver) { const t0 = performance.now(); (function loop() { window.renderAt(((performance.now() - t0) / 1000) % DURATION); requestAnimationFrame(loop); })(); }
+</script>
+</body>
+</html>
